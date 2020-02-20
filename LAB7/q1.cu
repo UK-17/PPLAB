@@ -20,7 +20,7 @@ int main () {
 
     
     // Host copies of the variables
-    int A[M], B[M], C[M];
+    int A[M*N], B[M*N], C[M*N];
 
     int i, j;
     printf("Enter %d elements in A:\n",M*N);
@@ -34,7 +34,7 @@ int main () {
     // Device copies of the variables
     int *d_a, *d_b, *d_c;
 
-    int size = sizeof(int) * M;
+    int size = sizeof(int) * M*N;
 
     // Allocate memories to device copies of the objects
     cudaMalloc((void**)&d_a, size);
@@ -46,26 +46,26 @@ int main () {
     cudaMemcpy(d_b, &B, size, cudaMemcpyHostToDevice);
 
     // Launch kernel onto the device
-    add<<<M, 1>>>(d_a, d_b, d_c);
+    add<<<M, N>>>(d_a, d_b, d_c);
 
     // Copy the result back to the host
     cudaMemcpy(&C, d_c, size, cudaMemcpyDeviceToHost);
 
     // Output
     printf("A:\n");
-    for (j = 0; j < M; ++j) {
+    for (j = 0; j < M*N; ++j) {
         printf("%d\t", A[j]);
     }
     printf("\n");
 
     printf("B:\n");
-    for (j = 0; j < M; ++j) {
+    for (j = 0; j < M*N; ++j) {
         printf("%d\t", B[j]);
     }
     printf("\n");
 
     printf("A + B:\n");
-    for (j = 0; j < M; ++j) {
+    for (j = 0; j < M*N; ++j) {
         printf("%d\t", C[j]);
     }
     printf("\n");
